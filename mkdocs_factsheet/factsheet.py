@@ -36,7 +36,7 @@ class FactsheetPlugin(BasePlugin):
                 new[glob][2] = tup[2]
         self.facts_list = new
 
-    def on_page_markdown(self, md, page, config, site_navigation): #pylint: disable=unused-argument
+    def on_page_markdown(self, md, page, **_kwargs):
         self.page = page
         self.current = None
         output = []
@@ -57,13 +57,13 @@ class FactsheetPlugin(BasePlugin):
             return self.current
 
         for glob, sheet in self.facts_list.items():
-            if fnmatch(self.page.input_path, glob):
+            if fnmatch(self.page.abs_url, glob):
                 if sheet[1] is None:
                     with open(sheet[0]) as f:
                         sheet[1] = Facts(yaml.load(f))
                 return sheet[1]
 
-        raise ValueError('File %s does not match any factsheet glob' % self.page.input_path)
+        raise ValueError('File %s does not match any factsheet glob' % self.page.abs_url)
 
     def dispatch(self, line):
         parts = line.strip().split(':', 1)
