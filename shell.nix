@@ -14,16 +14,6 @@ livereload = buildPythonPackage rec {
   propagatedBuildInputs = [ markdown six tornado ];
 };
 
-markdown_include = buildPythonPackage rec {
-  pname = "markdown-include";
-  version = "0.5.1";
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "03r521ysbjjmxps8ar0q6scr19azbk4kp2akhw49lj49nmhm993j";
-  };
-  propagatedBuildInputs = [ markdown ];
-};
-
 markdown = buildPythonPackage rec {
   pname = "Markdown";
   version = "2.6.11";
@@ -34,15 +24,14 @@ markdown = buildPythonPackage rec {
   checkInputs = [ nose pyyaml pytest ];
 };
 
-pymdown-extensions = buildPythonPackage rec {
-  pname = "pymdown-extensions";
-  version = "4.9.2";
+mkdocs = buildPythonApplication rec {
+  pname = "mkdocs";
+  version = "1.0";
   src = fetchPypi {
     inherit pname version;
-    sha256 = "0a9p46il20vn95xc9qsj6q85ph64zfyqw3rg0r68dkicxmdmr4f9";
+    sha256 = "00m8yx14plclq9yqdm7qh3v38ichma17ly33vis2xjnn9hbd4cgp";
   };
-  checkInputs = [ pyyaml pytest ];
-  propagatedBuildInputs = [ markdown ];
+  propagatedBuildInputs = [ tornado livereload click pyyaml jinja2 ];
 };
 
 anytree = buildPythonPackage rec {
@@ -55,29 +44,9 @@ anytree = buildPythonPackage rec {
   checkInputs = [ pytest ];
 };
 
-mkdocs = buildPythonApplication rec {
-  pname = "mkdocs";
-  version = "0.17.3";
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "1faga4arlaq5y883zgpfgmf4iqfszmk50dycrkx7gc6y3a3rnvhj";
-  };
-  propagatedBuildInputs = [ tornado livereload click pyyaml markdown_include jinja2 ];
-};
-
-mkdocs-material = buildPythonPackage rec {
-  pname = "mkdocs-material";
-  version = "2.7.1";
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "06i77yg0j3ddpnr8b9yzgzmk19jhq14ki20nqavq8ba92dlk0x6g";
-  };
-  propagatedBuildInputs = [ pygments pymdown-extensions tornado mkdocs ];
-};
-
 in
 
 buildPythonApplication {
   name = "mkdocs-factsheet";
-  propagatedBuildInputs = [ mkdocs-material anytree pylint flake8 ];
+  propagatedBuildInputs = [ mkdocs anytree pylint flake8 ];
 }
