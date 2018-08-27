@@ -1,2 +1,2 @@
 anytree==2.4.3
-mkdocs==1.0
+mkdocs==1.0.2
