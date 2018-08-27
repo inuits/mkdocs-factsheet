@@ -14,6 +14,11 @@ from mkdocs.plugins import BasePlugin
 from mkdocs.config import config_options
 import yaml
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
 class FactsheetPlugin(BasePlugin):
     config_scheme = (('sheets', config_options.Type(dict)),)
 
@@ -163,6 +168,8 @@ class Facts(object):
             return
         component_parent = t.parent.components if t.parent.name != '_root' else {}
         for name, c in t.components.items():
+            if isinstance(c, NodeBase):
+                continue
             fro = c.pop('from', None)
             t.components[name] = c = Component(self, t.name, name, c)
             if fro is None:
@@ -182,6 +189,11 @@ class Facts(object):
                 if name not in parent.components:
                     parent = parent.parent
                     continue
+                if not isinstance(parent.components[name], NodeBase):
+                    fro = parent.components[name].pop('from', None)
+                    parent.components[name] = Component(self, t.name, name, parent.components[name])
+                    if fro is not None:
+                        raise ValueError('Not implemented - todo: lazy loading')
                 c.parent = parent.components[name]
                 break
 
