@@ -28,7 +28,7 @@ class FactsheetPlugin(BasePlugin):
         self.current = None
         self.page = None
 
-    def on_pre_build(self, _):
+    def on_pre_build(self, **kwargs):
         new = OrderedDict()
         for glob, path in self.config.get('sheets').items():
             new[glob] = [path, None, None]
