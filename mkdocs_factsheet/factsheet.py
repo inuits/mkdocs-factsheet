@@ -28,7 +28,7 @@ class FactsheetPlugin(BasePlugin):
         self.current = None
         self.page = None
 
-    def on_pre_build(self, _):
+    def on_pre_build(self, **kwargs):
         new = OrderedDict()
         for glob, path in self.config.get('sheets').items():
             new[glob] = [path, None, None]
@@ -65,7 +65,7 @@ class FactsheetPlugin(BasePlugin):
             if fnmatch(self.page.abs_url, glob):
                 if sheet[1] is None:
                     with open(sheet[0]) as f:
-                        sheet[1] = Facts(yaml.load(f))
+                        sheet[1] = Facts(yaml.safe_load(f))
                 return sheet[1]
 
         raise ValueError('File %s does not match any factsheet glob' % self.page.abs_url)
